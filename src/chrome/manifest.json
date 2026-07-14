@@ -1,7 +1,7 @@
 {
   "name": "__MSG_printliminatorName__",
-  "version": "4.0.5",
-  "manifest_version": 2,
+  "version": "4.1.0",
+  "manifest_version": 3,
   "author": "Chris Coyier",
   "description": "__MSG_printliminatorDescription__",
   "homepage_url": "https://github.com/CSS-Tricks/The-Printliminator",
@@ -13,16 +13,19 @@
     "64": "icon64.png",
     "128": "icon128.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": "icon32.png",
     "default_title": "__MSG_printliminatorName__",
     "default_popup": "popup.html"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
   "web_accessible_resources": [
-    "printliminator.js",
-    "printliminator.css"
+    {
+      "resources": ["printliminator.js", "printliminator.css"],
+      "matches": ["<all_urls>"]
+    }
   ]
 }

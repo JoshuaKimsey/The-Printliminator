@@ -13,7 +13,7 @@ html, body {
   margin: 0;
   background: #eee;
   font-size: 14px;
-  font-family: "Lucida Grande","Lucida Sans Unicode", Tahoma, sans-serif;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
   overflow: hidden;
 }
 
@@ -153,7 +153,7 @@ li.busy .icon {
 
 /* keyboard table */
 table {
-  font-family: Optima, Segoe, 'Segoe UI', Candara, Calibri, Arial, sans-serif;
+  font-family: Optima, Segoe, "Segoe UI", Candara, Calibri, Arial, sans-serif;
   font-size: 12px;
   text-transform: initial;
   margin-top: 4px 0 0 0;

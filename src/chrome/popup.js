@@ -1,35 +1,43 @@
 /*globals chrome */
 // inject printliminator from popup & control from there.
+// Manifest V3: uses chrome.scripting.executeScript / insertCSS instead of
+// the removed chrome.tabs.executeScript / insertCSS APIs.
 var commands = {
+	tabId: null,
 	remove : function() {
-		chrome.tabs.executeScript( null, {
-			code: 'thePrintliminator.removeGraphics();'
+		chrome.scripting.executeScript({
+			target: { tabId: commands.tabId },
+			func: () => thePrintliminator.removeGraphics()
 		});
 	},
 	print : function() {
-		document.querySelector( 'li.print' ).classList.add( '/* @echo busy */' );
+		document.querySelector( 'li./* @echo print */' ).classList.add( '/* @echo busy */' );
 		// ready state is delayed when a file on the page is not found
-		chrome.tabs.executeScript( null, {
-			code : 'document.readyState === "complete";'
+		chrome.scripting.executeScript({
+			target: { tabId: commands.tabId },
+			func: () => document.readyState === 'complete'
 		}, function( result ) {
-			if ( result && result[ 0 ] === true ) {
+			if ( result && result[ 0 ].result === true ) {
 				window.close();
-				chrome.tabs.executeScript( null, {
-					code : 'thePrintliminator.print();'
+				chrome.scripting.executeScript({
+					target: { tabId: commands.tabId },
+					func: () => thePrintliminator.print()
 				});
 			} else {
 				// keep checking ready state for 20 seconds
 				// if still not ready, abort, but still call print function
 				var loopy = function( i ) {
 					setTimeout(function () {
-						chrome.tabs.executeScript( null, {
-							code : 'document.readyState === "complete";'
+						chrome.scripting.executeScript({
+							target: { tabId: commands.tabId },
+							func: () => document.readyState === 'complete'
 						}, function( result ) {
-							if ( result && result[ 0 ] === true || i === 1 ) {
+							if ( result && result[ 0 ].result === true || i === 1 ) {
 								i = 0;
 								window.close();
-								chrome.tabs.executeScript( null, {
-									code : 'thePrintliminator.print();'
+								chrome.scripting.executeScript({
+									target: { tabId: commands.tabId },
+									func: () => thePrintliminator.print()
 								});
 							}
 							if ( --i > 0 ) {
@@ -44,8 +52,9 @@ var commands = {
 		});
 	},
 	stylize : function() {
-		chrome.tabs.executeScript( null, {
-			code : 'thePrintliminator.stylize();'
+		chrome.scripting.executeScript({
+			target: { tabId: commands.tabId },
+			func: () => thePrintliminator.stylize()
 		});
 	},
 	keyboard : function() {
@@ -56,8 +65,9 @@ var commands = {
 		this.innerHTML = chrome.i18n.getMessage( mode ? 'hideKeyboardCommands' : 'viewKeyboardCommands' );
 	},
 	undo : function() {
-		chrome.tabs.executeScript( null, {
-			code : 'thePrintliminator.undo();'
+		chrome.scripting.executeScript({
+			target: { tabId: commands.tabId },
+			func: () => thePrintliminator.undo()
 		});
 	},
 	setLanguage : function(){
@@ -91,23 +101,30 @@ chrome.windows.getCurrent( function( win ) {
 			return false;
 		}
 
+		// store tab id for the command methods
+		commands.tabId = tabArray[ 0 ].id;
+
 		// inject css & js only on initial click
-		chrome.tabs.executeScript( null, {
-			code : 'document.querySelector( "body" ).classList.contains( "/* @echo enabled */" );',
-			matchAboutBlank : true
+		// NOTE: MV3 scripting API has no matchAboutBlank equivalent; the
+		// Yahoo Mail print-popup edge case is deferred (would need
+		// webNavigation + explicit frame targeting).
+		chrome.scripting.executeScript({
+			target: { tabId: commands.tabId },
+			func: () => document.querySelector( "body" ).classList.contains( "/* @echo enabled */" )
 		}, function( result ) {
-			if ( result && !result[ 0 ] ) {
-				chrome.tabs.insertCSS( null, {
-					file : 'printliminator.css',
-					matchAboutBlank : true
+			if ( result && !result[ 0 ].result ) {
+				chrome.scripting.insertCSS({
+					target: { tabId: commands.tabId },
+					files: [ 'printliminator.css' ]
 				});
 
-				chrome.tabs.executeScript( null, {
-					file: 'printliminator.js',
-					matchAboutBlank : true
+				chrome.scripting.executeScript({
+					target: { tabId: commands.tabId },
+					files: [ 'printliminator.js' ]
 				}, function() {
-					chrome.tabs.executeScript( null, {
-						code : 'thePrintliminator.init();'
+					chrome.scripting.executeScript({
+						target: { tabId: commands.tabId },
+						func: () => thePrintliminator.init()
 					});
 				});
 			}
