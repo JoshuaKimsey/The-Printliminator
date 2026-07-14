@@ -1,6 +1,6 @@
 {
   "name": "__MSG_printliminatorName__",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "manifest_version": 3,
   "author": "Chris Coyier",
   "description": "__MSG_printliminatorDescription__",
