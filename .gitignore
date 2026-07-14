@@ -46,6 +46,7 @@ local.properties
 [Dd]ebug/
 [Rr]elease/
 node_modules/
+dist/*.zip
 *_i.c
 *_p.c
 *.ilk

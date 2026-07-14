@@ -14,7 +14,8 @@
   "homepage": "https://github.com/CSS-Tricks/The-Printliminator",
   "scripts": {
     "build": "node build.js",
-    "clean": "node build.js --clean"
+    "clean": "node build.js --clean",
+    "package": "node build.js --package"
   },
   "devDependencies": {
     "sass": "^1.77.0"
