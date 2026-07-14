@@ -3,8 +3,13 @@
   "version": "5.0.0",
   "manifest_version": 3,
   "author": "Chris Coyier",
+  "contributors": [
+    "Devon Govett",
+    "Rob Garrison",
+    "Joshua Kimsey (Manifest V3 migration)"
+  ],
   "description": "__MSG_printliminatorDescription__",
-  "homepage_url": "https://github.com/CSS-Tricks/The-Printliminator",
+  "homepage_url": "https://github.com/JoshuaKimsey/The-Printliminator",
   "default_locale": "en",
   "icons": {
     "16": "icon16.png",
